@@ -9,6 +9,11 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/rgb.h>
 
+// Sticky layers (&sl) stay active for 2.5s instead of the default 1s.
+&sl {
+    release-after-ms = <2500>;
+};
+
 / {
     chosen {
         zmk,physical-layout = &default_layout;
