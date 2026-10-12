@@ -1,0 +1,5 @@
+description: Control the nice_view_gem display theme (light/dark)
+
+compatible: "zmk,behavior-nvgem"
+
+include: one_param.yaml
