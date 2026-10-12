@@ -36,21 +36,21 @@ include:
 
   - board: piantor_pro_bt_left
     snippet: studio-rpc-usb-uart
-    shield: sharp_mip
+    shield: nice_view
     cmake-args: -DCONFIG_ZMK_STUDIO=y
     artifact-name: piantor_pro_bt_left
   - board: piantor_pro_bt_right
-    shield: sharp_mip
+    shield: nice_view
     snippet: studio-rpc-usb-uart
     artifact-name: piantor_pro_bt_right
 
   - board: piantor_pro_bt_5col_left
     snippet: studio-rpc-usb-uart
-    shield: sharp_mip
+    shield: nice_view
     cmake-args: -DCONFIG_ZMK_STUDIO=y
     artifact-name: piantor_pro_bt_5col_left
   - board: piantor_pro_bt_5col_right
-    shield: sharp_mip
+    shield: nice_view
     snippet: studio-rpc-usb-uart
     artifact-name: piantor_pro_bt_5col_right
 
