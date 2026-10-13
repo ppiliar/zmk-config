@@ -26,6 +26,14 @@ static void theme_apply_work_cb(struct k_work *_work) {
     nvgem_images_apply();
     nvgem_crystal_apply();
     lv_img_cache_invalidate_src(NULL);
+
+    // ZMK applies no LVGL theme in this build: initialize_theme() is gated on
+    // CONFIG_LV_USE_THEME_MONO, an undefined symbol in the Zephyr 3.5 LVGL
+    // integration, so lv_theme_mono_init must not be called here either — it
+    // would impose card styling (border + pad) on the widget containers at the
+    // first toggle, shifting every tile. The widget objs carry explicit
+    // background styles instead (pinned at init, re-pinned by the redraw
+    // below), which is all the theme handling this widget needs.
     nvgem_theme_request_redraw();
 }
 static K_WORK_DEFINE(theme_apply_work, theme_apply_work_cb);

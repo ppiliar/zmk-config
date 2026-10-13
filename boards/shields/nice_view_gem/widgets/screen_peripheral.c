@@ -107,6 +107,19 @@ ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 int zmk_widget_screen_init(struct zmk_widget_screen *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, SCREEN_HEIGHT, SCREEN_WIDTH);
+    // No LVGL theme is active in this build: ZMK's initialize_theme() is gated
+    // on CONFIG_LV_USE_THEME_MONO, an undefined symbol in the Zephyr 3.5 LVGL
+    // integration. The canvas offsets below are computed for the full 160x68
+    // area, and the strips between the tiles must show the theme color, so pin
+    // the background explicitly (the redraw worker re-pins it on &nvgem
+    // toggles). The card-style neutralizers are defense in depth: if a theme
+    // were ever applied, its 1 px border + 4 px pad would shift every tile and
+    // clip content off the panel edge.
+    lv_obj_set_style_border_width(widget->obj, 0, LV_PART_MAIN);
+    lv_obj_set_style_pad_all(widget->obj, 0, LV_PART_MAIN);
+    lv_obj_set_style_radius(widget->obj, 0, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(widget->obj, LVGL_BACKGROUND, LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(widget->obj, LV_OPA_COVER, LV_PART_MAIN);
 
     lv_obj_t *top = lv_canvas_create(widget->obj);
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
@@ -131,7 +144,10 @@ static void theme_redraw_work_cb(struct k_work *_work) {
     struct zmk_widget_screen *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         draw_top(widget->obj, widget->cbuf, &widget->state);
-        // Repaint image/animation children with the patched palettes.
+        // The tiles cover most but not all of the obj; re-pin the background
+        // so the strips between them follow the new theme, then repaint the
+        // image/animation children with the patched palettes.
+        lv_obj_set_style_bg_color(widget->obj, LVGL_BACKGROUND, LV_PART_MAIN);
         lv_obj_invalidate(widget->obj);
     }
 }
