@@ -1,2 +1,5 @@
 .DS_Store
 .tools/
+tools/simulator/build/
+tools/simulator/out/
+tools/simulator/lvgl/
