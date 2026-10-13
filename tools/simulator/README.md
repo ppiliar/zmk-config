@@ -31,6 +31,17 @@ widgets author each 68×68 tile portrait and rotate it into the framebuffer.
 actually sees — use it to judge the visual result (e.g. clipping at the panel
 edges is much easier to spot there).
 
+**Panel polarity:** the nice!view is a Sharp LS0xx memory LCD, which renders a
+`1` bit as a *black* pixel. The widgets author the framebuffer "like paper"
+(white background, black ink), so the raw PNGs are polarity-flipped relative
+to the physical panel: a black-on-white raw render appears on the device as
+light text on the dark reflective background — the gem's default look. In
+framebuffer terms, "light" (`CONFIG_NICE_VIEW_WIDGET_INVERTED` unset) is the
+device's dark appearance, and the inverted framebuffer is the device's light
+appearance. The `_view.png` companions apply the polarity inversion, so they
+show **exactly what the panel displays**; the raw PNGs are framebuffer dumps
+(their `fbsum` checksums are what stay byte-comparable).
+
 First run clones LVGL into `tools/simulator/lvgl` at Zephyr's pinned revision
 (`build/` and `out/` are gitignored).
 

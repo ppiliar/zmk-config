@@ -55,12 +55,18 @@ static void write_chunk(FILE *f, const char *type, const uint8_t *data, uint32_t
 // into it (rotate_canvas: lv_canvas_transform angle 900 = 90 deg clockwise).
 // Rotating the framebuffer 90 deg CCW recovers the portrait view the user
 // actually sees on the device.
+//
+// The nice!view panel is a Sharp LS0xx memory LCD: a 1 bit renders BLACK. The
+// widgets author the framebuffer like paper (white bg, black ink), so the
+// rotated companion inverts the bits — making it show the physical appearance
+// the user sees on the keyboard, not the framebuffer convention.
 void sim_png_write_rotated(const uint8_t *fb, int w, int h, const char *path) {
-    // 90 deg CCW: out(x'=y, y'=w-1-x) = fb(x,y); out is h wide, w tall
+    // 90 deg CCW with polarity inversion:
+    // out(x'=y, y'=w-1-x) = !fb(x,y); out is h wide, w tall
     uint8_t *rot = malloc(h * w);
     for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++)
-            rot[(w - 1 - x) * h + y] = fb[y * w + x];
+            rot[(w - 1 - x) * h + y] = fb[y * w + x] ? 0 : 1;
     sim_png_write(rot, h, w, path);
     free(rot);
 }
