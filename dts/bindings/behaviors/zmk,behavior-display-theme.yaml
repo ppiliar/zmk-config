@@ -1,0 +1,5 @@
+description: Control the display theme (light/dark) of the stock status screen
+
+compatible: "zmk,behavior-display-theme"
+
+include: one_param.yaml
